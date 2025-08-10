@@ -1,139 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Strategy Ontology Diagram</title>
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #fff;
-  }
-  .box {
-    stroke: #333;
-    stroke-width: 1.5px;
-    rx: 6;
-    ry: 6;
-  }
-  .label {
-    font-size: 12px;
-    text-anchor: middle;
-    alignment-baseline: middle;
-    fill: #000;
-  }
-  .link {
-    fill: none;
-    stroke: #555;
-    stroke-width: 1.5px;
-    marker-end: url(#arrow);
-  }
-  .column-label {
-    font-weight: bold;
-    font-size: 14px;
-    text-anchor: middle;
-    fill: #333;
-  }
-</style>
+  <meta charset="UTF-8">
+  <title>Strategy Ontology Diagram</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .node rect {
+      rx: 8;
+      ry: 8;
+      stroke: #333;
+      stroke-width: 2px;
+      filter: drop-shadow(0px 1.5px 2px #99999944);
+    }
+    .node text {
+      fill: #000;
+      font-size: 14px;
+      font-weight: bold;
+      text-anchor: middle;
+      alignment-baseline: middle;
+      pointer-events: none;
+    }
+    .link {
+      fill: none;
+      stroke: #888;
+      stroke-width: 2.5px;
+      marker-end: url(#arrow);
+      opacity: 0.8;
+    }
+    .band-label {
+      font-weight: bold;
+      font-size: 13px;
+      fill: #555;
+      text-anchor: middle;
+    }
+    svg { background: #fff; }
+  </style>
 </head>
 <body>
-<svg width="1200" height="600"></svg>
-
+<svg width="1250" height="540"></svg>
 <script>
-const svg = d3.select("svg");
-const width = +svg.attr("width");
-const height = +svg.attr("height");
-
-// Column definitions
-const columns = [
-  { name: "Enduring", color: "#fff2cc", entities: ["Purpose", "Vision", "Core Values"] },
-  { name: "3-5 years", color: "#d0e0e3", entities: ["Targets"] },
-  { name: "1 year", color: "#d9ead3", entities: ["Annual Goals", "KPIs"] },
-  { name: "Quarter", color: "#fce5cd", entities: ["Key Initiatives"] },
-  { name: "Next", color: "#f9cb9c", entities: ["Meeting Rhythms"] }
+// Band info for columns
+const bands = [
+  { label: 'Enduring',        color: '#fff2b0', x: 60,   width: 190 },
+  { label: '3 to 5 years',    color: '#cbe4ff', x: 260,  width: 180 },
+  { label: '1 year',          color: '#d8f2c3', x: 460,  width: 180 },
+  { label: 'Quarter',         color: '#ffd8b2', x: 660,  width: 190 },
+  { label: 'Next',            color: '#ffeac3', x: 870,  width: 270 }
 ];
 
-// Box size & spacing
-const boxWidth = 140, boxHeight = 50;
-const colSpacing = 200, rowSpacing = 90;
-const startX = 100, startY = 100;
+const nodes = [
+  { id: "Purpose",          col: 0, y: 80 },
+  { id: "Vision",           col: 0, y: 170 },
+  { id: "Core Values",      col: 0, y: 260 },
+  { id: "Targets",          col: 1, y: 170 },
+  { id: "Annual Goals",     col: 2, y: 120 },
+  { id: "KPIs",             col: 2, y: 220 },
+  { id: "Key Initiatives",  col: 3, y: 120 },
+  { id: "Meeting Rhythms",  col: 4, y: 120 }
+];
 
-// Arrows marker
+// Logical connections
+const links = [
+  { source: "Purpose",         target: "Vision" },
+  { source: "Vision",          target: "Core Values" },
+  { source: "Core Values",     target: "Targets" },
+  { source: "Targets",         target: "Annual Goals" },
+  { source: "Annual Goals",    target: "KPIs" },
+  { source: "KPIs",            target: "Key Initiatives" },
+  { source: "Key Initiatives", target: "Meeting Rhythms" }
+];
+
+const svg = d3.select("svg");
+const nodeWidth = 130, nodeHeight = 58;
+
+// Render colored bands/columns
+svg.selectAll(".band")
+  .data(bands)
+  .enter().append("rect")
+    .attr("x", d => d.x)
+    .attr("y", 0)
+    .attr("width", d => d.width)
+    .attr("height", 540)
+    .attr("fill", d => d.color)
+    .attr("stroke", "#888")
+    .attr("stroke-width", 1)
+    .attr("opacity", 0.55);
+
+svg.selectAll(".band-label")
+  .data(bands)
+  .enter().append("text")
+    .attr("class", "band-label")
+    .attr("x", d => d.x + d.width/2)
+    .attr("y", 36)
+    .text(d => d.label);
+
+// Place nodes
+const nodeGroups = svg.selectAll(".node")
+  .data(nodes)
+  .enter().append("g")
+    .attr("class", "node")
+    .attr("transform", d => {
+      const bandX = bands[d.col].x;
+      const bandW = bands[d.col].width;
+      return `translate(${bandX + bandW/2 - nodeWidth/2},${d.y})`;
+    });
+
+nodeGroups.append("rect")
+  .attr("width", nodeWidth)
+  .attr("height", nodeHeight)
+  .attr("fill", d => bands[d.col].color)
+  .attr("stroke", "#333");
+
+nodeGroups.append("text")
+  .attr("x", nodeWidth/2)
+  .attr("y", nodeHeight/2 + 5)
+  .text(d => d.id);
+
+// Helper: get center coordinates for a node for links
+function getNodeCenter(nodeId) {
+  const node = nodes.find(n => n.id === nodeId);
+  const x = bands[node.col].x + bands[node.col].width/2;
+  const y = node.y + nodeHeight/2;
+  return { x, y };
+}
+
+// Arrow marker
 svg.append("defs").append("marker")
   .attr("id", "arrow")
   .attr("viewBox", "0 0 10 10")
-  .attr("refX", 10)
+  .attr("refX", 9.5)
   .attr("refY", 5)
-  .attr("markerWidth", 6)
-  .attr("markerHeight", 6)
+  .attr("markerWidth", 7)
+  .attr("markerHeight", 7)
   .attr("orient", "auto")
   .append("path")
-    .attr("d", "M 0 0 L 10 5 L 0 10 z")
-    .attr("fill", "#555");
-
-// Build node positions
-let nodes = [];
-let links = [];
-columns.forEach((col, ci) => {
-  col.entities.forEach((ent, ei) => {
-    const x = startX + ci * colSpacing;
-    const y = startY + ei * rowSpacing + (col.entities.length === 1 ? rowSpacing/2 : 0);
-    nodes.push({ id: ent, column: col.name, color: col.color, x, y });
-  });
-});
-// Define logical connections
-links = [
-  {source: "Purpose", target: "Vision"},
-  {source: "Vision", target: "Core Values"},
-  {source: "Core Values", target: "Targets"},
-  {source: "Targets", target: "Annual Goals"},
-  {source: "Annual Goals", target: "KPIs"},
-  {source: "KPIs", target: "Key Initiatives"},
-  {source: "Key Initiatives", target: "Meeting Rhythms"}
-];
-
-// Draw columns background & labels
-columns.forEach((col, ci) => {
-  const x = startX + ci * colSpacing - boxWidth/2 - 20;
-  svg.append("rect")
-    .attr("x", x)
-    .attr("y", 50)
-    .attr("width", boxWidth + 40)
-    .attr("height", height - 100)
-    .attr("fill", col.color)
-    .attr("opacity", 0.4);
-
-  svg.append("text")
-    .attr("class", "column-label")
-    .attr("x", x + (boxWidth+40)/2)
-    .attr("y", 40)
-    .text(col.name);
-});
+  .attr("d", "M 0 0 L 10 5 L 0 10 z")
+  .attr("fill", "#888");
 
 // Draw links
 svg.selectAll(".link")
   .data(links)
-  .enter()
-  .append("line")
-  .attr("class", "link")
-  .attr("x1", d => nodes.find(n => n.id === d.source).x)
-  .attr("y1", d => nodes.find(n => n.id === d.source).y)
-  .attr("x2", d => nodes.find(n => n.id === d.target).x)
-  .attr("y2", d => nodes.find(n => n.id === d.target).y);
+  .enter().append("path")
+    .attr("class", "link")
+    .attr("d", d => {
+      const from = getNodeCenter(d.source);
+      const to = getNodeCenter(d.target);
+      // Use a cubic curve for a gentle transition between columns
+      const dx = (to.x - from.x) * 0.45;
+      return `M${from.x},${from.y} C${from.x+dx},${from.y} ${to.x-dx},${to.y} ${to.x},${to.y}`;
+    });
 
-// Draw nodes
-const gNodes = svg.selectAll(".node")
-  .data(nodes)
-  .enter()
-  .append("g")
-  .attr("class", "node")
-  .attr("transform", d => `translate(${d.x},${d.y})`);
-
-gNodes.append("rect")
-  .attr("class", "box")
-  .attr("x", -boxWidth/2)
-  .attr("y", -boxHeight/2)
-  .attr("width", boxWidth)
-  .attr("height", boxHeight)
-  .attr("fill", d => d.color);
-
-gNodes.append
+</script>
+</body>
+</html>
