@@ -12,7 +12,6 @@ Below is a proposal for both, designed specifically strategy, suitable for YAML/
 
 Here is a rewritten ontology design specification for your strategy document, aligned with the requested format while formally capturing the entities, attributes, and relationships:
 
-
 ### Entities (Classes/Objects)
 
 - `StrategyDocument`  
