@@ -7,123 +7,133 @@
 <style>
   body {
     font-family: Arial, sans-serif;
+    background: #fff;
   }
-  .node rect {
+  .box {
     stroke: #333;
     stroke-width: 1.5px;
-    rx: 8;
-    ry: 8;
+    rx: 6;
+    ry: 6;
   }
-  .node text {
-    fill: #000;
+  .label {
     font-size: 12px;
     text-anchor: middle;
     alignment-baseline: middle;
+    fill: #000;
   }
   .link {
     fill: none;
-    stroke: #777;
+    stroke: #555;
     stroke-width: 1.5px;
     marker-end: url(#arrow);
+  }
+  .column-label {
+    font-weight: bold;
+    font-size: 14px;
+    text-anchor: middle;
+    fill: #333;
   }
 </style>
 </head>
 <body>
-<svg width="1100" height="650"></svg>
+<svg width="1200" height="600"></svg>
 
 <script>
-// Ontology Nodes (with time horizon classification)
-const nodes = [
-  { id: "Purpose", group: "Enduring" },
-  { id: "Vision", group: "Enduring" },
-  { id: "Core Values", group: "Enduring" },
-  { id: "Targets", group: "3-5 years" },
-  { id: "Annual Goals", group: "1 year" },
-  { id: "Key Initiatives", group: "Quarter" },
-  { id: "KPIs", group: "Quarter" },
-  { id: "Meeting Rhythms", group: "Quarter" }
-];
-
-// Links based on logical hierarchy in the attached model
-const links = [
-  { source: "Purpose", target: "Vision" },
-  { source: "Vision", target: "Core Values" },
-  { source: "Core Values", target: "Targets" },
-  { source: "Targets", target: "Annual Goals" },
-  { source: "Annual Goals", target: "Key Initiatives" },
-  { source: "Key Initiatives", target: "KPIs" },
-  { source: "KPIs", target: "Meeting Rhythms" }
-];
-
-// Color mapping based on time horizon
-const colorScale = {
-  "Enduring": "#ffd966",
-  "3-5 years": "#9fc5e8",
-  "1 year": "#b6d7a8",
-  "Quarter": "#f6b26b"
-};
-
 const svg = d3.select("svg");
 const width = +svg.attr("width");
 const height = +svg.attr("height");
 
-// Arrow marker defs
+// Column definitions
+const columns = [
+  { name: "Enduring", color: "#fff2cc", entities: ["Purpose", "Vision", "Core Values"] },
+  { name: "3-5 years", color: "#d0e0e3", entities: ["Targets"] },
+  { name: "1 year", color: "#d9ead3", entities: ["Annual Goals", "KPIs"] },
+  { name: "Quarter", color: "#fce5cd", entities: ["Key Initiatives"] },
+  { name: "Next", color: "#f9cb9c", entities: ["Meeting Rhythms"] }
+];
+
+// Box size & spacing
+const boxWidth = 140, boxHeight = 50;
+const colSpacing = 200, rowSpacing = 90;
+const startX = 100, startY = 100;
+
+// Arrows marker
 svg.append("defs").append("marker")
   .attr("id", "arrow")
   .attr("viewBox", "0 0 10 10")
-  .attr("refX", 18)
+  .attr("refX", 10)
   .attr("refY", 5)
   .attr("markerWidth", 6)
   .attr("markerHeight", 6)
   .attr("orient", "auto")
   .append("path")
-  .attr("d", "M 0 0 L 10 5 L 0 10 z")
-  .attr("fill", "#777");
+    .attr("d", "M 0 0 L 10 5 L 0 10 z")
+    .attr("fill", "#555");
 
-// Force simulation
-const simulation = d3.forceSimulation(nodes)
-  .force("link", d3.forceLink(links).id(d => d.id).distance(150))
-  .force("charge", d3.forceManyBody().strength(-500))
-  .force("center", d3.forceCenter(width/2, height/2))
-  .force("collide", d3.forceCollide(80));
+// Build node positions
+let nodes = [];
+let links = [];
+columns.forEach((col, ci) => {
+  col.entities.forEach((ent, ei) => {
+    const x = startX + ci * colSpacing;
+    const y = startY + ei * rowSpacing + (col.entities.length === 1 ? rowSpacing/2 : 0);
+    nodes.push({ id: ent, column: col.name, color: col.color, x, y });
+  });
+});
+// Define logical connections
+links = [
+  {source: "Purpose", target: "Vision"},
+  {source: "Vision", target: "Core Values"},
+  {source: "Core Values", target: "Targets"},
+  {source: "Targets", target: "Annual Goals"},
+  {source: "Annual Goals", target: "KPIs"},
+  {source: "KPIs", target: "Key Initiatives"},
+  {source: "Key Initiatives", target: "Meeting Rhythms"}
+];
 
-// Draw links
-const link = svg.append("g")
-  .attr("class", "links")
-  .selectAll("line")
-  .data(links)
-  .enter().append("line")
-  .attr("class", "link");
+// Draw columns background & labels
+columns.forEach((col, ci) => {
+  const x = startX + ci * colSpacing - boxWidth/2 - 20;
+  svg.append("rect")
+    .attr("x", x)
+    .attr("y", 50)
+    .attr("width", boxWidth + 40)
+    .attr("height", height - 100)
+    .attr("fill", col.color)
+    .attr("opacity", 0.4);
 
-// Draw nodes
-const node = svg.append("g")
-  .attr("class", "nodes")
-  .selectAll("g")
-  .data(nodes)
-  .enter().append("g")
-  .attr("class", "node");
-
-node.append("rect")
-  .attr("width", 140)
-  .attr("height", 40)
-  .attr("x", -70)
-  .attr("y", -20)
-  .attr("fill", d => colorScale[d.group])
-  .attr("stroke", "#333");
-
-node.append("text")
-  .text(d => d.id);
-
-simulation.on("tick", () => {
-  link
-    .attr("x1", d => d.source.x)
-    .attr("y1", d => d.source.y)
-    .attr("x2", d => d.target.x)
-    .attr("y2", d => d.target.y);
-
-  node.attr("transform", d => `translate(${d.x},${d.y})`);
+  svg.append("text")
+    .attr("class", "column-label")
+    .attr("x", x + (boxWidth+40)/2)
+    .attr("y", 40)
+    .text(col.name);
 });
 
-</script>
-</body>
-</html>
+// Draw links
+svg.selectAll(".link")
+  .data(links)
+  .enter()
+  .append("line")
+  .attr("class", "link")
+  .attr("x1", d => nodes.find(n => n.id === d.source).x)
+  .attr("y1", d => nodes.find(n => n.id === d.source).y)
+  .attr("x2", d => nodes.find(n => n.id === d.target).x)
+  .attr("y2", d => nodes.find(n => n.id === d.target).y);
+
+// Draw nodes
+const gNodes = svg.selectAll(".node")
+  .data(nodes)
+  .enter()
+  .append("g")
+  .attr("class", "node")
+  .attr("transform", d => `translate(${d.x},${d.y})`);
+
+gNodes.append("rect")
+  .attr("class", "box")
+  .attr("x", -boxWidth/2)
+  .attr("y", -boxHeight/2)
+  .attr("width", boxWidth)
+  .attr("height", boxHeight)
+  .attr("fill", d => d.color);
+
+gNodes.append
