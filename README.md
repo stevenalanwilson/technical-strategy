@@ -8,13 +8,10 @@ Below is a proposal for both, designed specifically strategy, suitable for YAML/
 
 ***
 
-## **Draft: Ontology Design**
+## Draft: Ontology Design Specification for Strategy Document
 
 Here is a rewritten ontology design specification for your strategy document, aligned with the requested format while formally capturing the entities, attributes, and relationships:
 
-***
-
-## Ontology Design Specification for Strategy Document
 
 ### Entities (Classes/Objects)
 
