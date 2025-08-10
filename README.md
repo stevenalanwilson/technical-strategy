@@ -1,4 +1,4 @@
-# Digital Platform Strategy Document: Semantic Language & Ontology
+# Technical Strategy Document: Semantic Language & Ontology
 
 This repository provides a structured approach for representing your digital platform strategy as code. By defining a formal ontology and semantic language, you can capture strategic goals, values, targets, and initiatives in machine-readable formats like YAML, JSON, or a custom DSL. This enables validation, automation, and seamless integration with software tools, making your strategy actionable and easy to maintain.
 
@@ -8,7 +8,7 @@ Below is a proposal for both, designed specifically strategy, suitable for YAML/
 
 ***
 
-## **Ontology Design**
+## **Draft: Ontology Design**
 
 **Entities (Classes/Objects):**
 - `StrategyDocument`
