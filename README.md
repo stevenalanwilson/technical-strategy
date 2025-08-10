@@ -70,8 +70,8 @@ Here is a rewritten ontology design specification for your strategy document, al
 
 ## Model Diagram 
 
-[Link to model diagrm](https://stevenalanwilson.github.io/technical-strategy/)
-[Link to detailed example diagram](https://stevenalanwilson.github.io/technical-strategy/detail-example.html)
+- [Link to model diagrm](https://stevenalanwilson.github.io/technical-strategy/)
+- [Link to detailed example diagram](https://stevenalanwilson.github.io/technical-strategy/detail-example.html)
 
 ***
 
