@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>One Page Technical Framework - Table Diagram</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 30px;
+    background: #fafafa;
+    color: #222;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    table-layout: fixed;
+  }
+  th, td {
+    padding: 16px 10px;
+    text-align: center;
+    vertical-align: middle;
+    border: 2px solid #ccc;
+    position: relative;
+    word-wrap: break-word;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  th {
+    background: #888;
+    color: black;
+  }
+  /* Time horizons column headers */
+  .col-enduring { background: #fff2b0; }
+  .col-midterm { background: #cbe4ff; }
+  .col-oneyear { background: #d8f2c3; }
+  .col-quarter { background: #ffd8b2; }
+  .col-next { background: #ffeac3; }
+
+  /* Entity cell styles */
+  .entity {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgb(0 0 0 / 0.1);
+    text-align: left;
+  }
+
+  /* Arrows for hierarchical relations */
+  /* Right pointing arrow on the right edge */
+  .arrow-right::after {
+    content: "→";
+    font-size: 22px;
+    position: absolute;
+    right: -24px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #555;
+  }
+
+  /* Down arrow below cell */
+  .arrow-down::after {
+    content: "↓";
+    font-size: 22px;
+    position: absolute;
+    bottom: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #555;
+  }
+
+  /* Combine right and down arrow for cells that connect both ways */
+  .arrow-right-down::after {
+    content: "↘";
+    font-size: 22px;
+    position: absolute;
+    right: -24px;
+    bottom: -26px;
+    color: #555;
+  }
+
+  /* Adjust cell padding when arrows present to avoid crowding */
+  .arrow-right, .arrow-right-down {
+    padding-right: 30px;
+  }
+  .arrow-down, .arrow-right-down {
+    padding-bottom: 35px;
+  }
+
+  /* Responsive: stack table for narrow screens */
+  @media (max-width: 700px) {
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+    thead tr {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+    tr {
+      margin: 0 0 1.5rem 0;
+    }
+    td {
+      border: none;
+      padding-left: 50%;
+      text-align: left;
+      position: relative;
+      min-height: 50px;
+    }
+    td::before {
+      position: absolute;
+      left: 10px;
+      top: 14px;
+      width: 45%;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+    /* Label each cell with its column header on small screens */
+    td:nth-of-type(1)::before { content: "Enduring"; }
+    td:nth-of-type(2)::before { content: "3 to 5 years"; }
+    td:nth-of-type(3)::before { content: "1 year"; }
+    td:nth-of-type(4)::before { content: "Quarter"; }
+    td:nth-of-type(5)::before { content: "Next"; }
+  }
+
+  /* Styling for lists inside cells */
+  ul {
+    margin: 4px 0 0 20px;
+    font-weight: normal;
+    font-size: 13px;
+  }
+  li {
+    margin-bottom: 4px;
+  }
+  .okr-list {
+    margin-top: 8px;
+    font-weight: normal;
+    font-size: 13px;
+  }
+  .okr-title {
+    font-weight: 600;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<h1>One Page Technical Framework</h1>
+
+<table aria-label="Strategy Ontology Framework Diagram">
+  <thead>
+    <tr>
+      <th class="col-enduring">Enduring</th>
+      <th class="col-midterm">3 to 5 years</th>
+      <th class="col-oneyear">1 year</th>
+      <th class="col-quarter">Quarter</th>
+      <th class="col-next">Next</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="entity" style="vertical-align: top;">
+        Vision
+        <div style="font-weight: normal; margin-top: 8px; font-size: 13px;">
+          To be the leading digital platform in our sector, recognized for simplicity, trust, and scale by 2027.
+        </div>
+      </td>
+      <td class="entity" style="vertical-align: top;">
+        Targets
+        <div style="font-weight: normal; margin-top: 8px; font-size: 13px; text-align: left;">
+          <ul>
+            <li>3,000,000 active users</li>
+            <li>98% customer satisfaction</li>
+            <li>$50M annual recurring revenue</li>
+            <li>Platform uptime: 99.99%</li>
+          </ul>
+        </div>
+      </td>
+      <td class="entity" style="vertical-align: top;">
+        Annual Goals
+        <div style="font-weight: normal; margin-top: 8px; font-size: 13px; text-align: left;">
+          <div><strong>Double monthly active users</strong></div>
+          <ul>
+            <li>Increase user acquisition channels effectiveness</li>
+            <li>Achieve 15% growth in referral traffic</li>
+            <li>Improve onboarding conversion rate to 60%</li>
+          </ul>
+          <div class="okr-title">---</div>
+          <div><strong>Launch 2 key integrations with major partners</strong></div>
+          <ul>
+            <li>Expand platform interoperability</li>
+            <li>Release API for Partner A by Q2</li>
+            <li>Complete integration testing with Partner B by Q3</li>
+          </ul>
+        </div>
+      </td>
+      <td class="entity" style="vertical-align: top;">
+        Key Initiatives
+        <div style="font-weight: normal; margin-top: 8px; font-size: 13px; text-align: left;">
+          <strong>Product</strong>
+          <ul>
+            <li>Re-platform for scalability</li>
+            <li>Roll out advanced analytics dashboard</li>
+            <li>Reduce latency by 30%</li>
+            <li>Launch dashboard with 5+ key metrics</li>
+          </ul>
+          <strong>Marketing & Growth</strong>
+          <ul>
+            <li>Launch referral program</li>
+            <li>Co-market with top 3 industry partners</li>
+            <li>Acquire 10,000 new users through referrals</li>
+            <li>Generate 20% leads from co-marketing campaigns</li>
+          </ul>
+          <strong>Operations</strong>
+          <ul>
+            <li>Automate onboarding</li>
+            <li>Implement real-time monitoring</li>
+            <li>Cut manual onboarding steps by 50%</li>
+            <li>Achieve 95% incident detection via monitoring</li>
+          </ul>
+          <strong>People</strong>
+          <ul>
+            <li>Invest in agile training</li>
+            <li>Quarterly team alignment days</li>
+            <li>Conduct 4 agile workshops</li>
+            <li>90% team alignment survey score</li>
+          </ul>
+        </div>
+      </td>
+      <td class="entity" style="vertical-align: top;">
+        Meeting Rhythms
+        <div style="font-weight: normal; margin-top: 8px; font-size: 13px; text-align: left;">
+          <ul>
+            <li><strong>Daily:</strong> 10-min standup</li>
+            <li><strong>Weekly:</strong> Progress & priorities</li>
+            <li><strong>Monthly:</strong> Metrics review</li>
+            <li><strong>Quarterly:</strong> Strategic review</li>
+            <li><strong>Annually:</strong> Deep-dive planning</li>
+          </ul>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="entity" style="vertical-align: top;">
+        Purpose
+        <div style="font-weight: normal; margin-top: 8px; font-size: 13px;">
+          Empower users and partners by delivering seamless digital experiences that enable growth, efficiency, and innovation.
+        </div>
+      </td>
+      <td class="entity" style="vertical-align: top;">
+        KPIs
+        <div style="font-weight: normal; margin-top: 8px; font-size: 13px; text-align: left;">
+          <ul>
+            <li>Weekly active users</li>
+            <li>Uptime & response speed</li>
+            <li>Customer satisfaction score</li>
+            <li>Partner engagement rate</li>
+            <li>Roadmap milestone completion percentage</li>
+          </ul>
+        </div>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="entity" style="vertical-align: middle;">
+        Core Values
+        <div style="font-weight: normal; margin-top: 8px; font-size: 13px; text-align: left;">
+          <ul>
+            <li>Customer obsession</li>
+            <li>Relentless improvement</li>
+            <li>Openness & collaboration</li>
+            <li>Data-driven decisions</li>
+            <li>High accountability</li>
+          </ul>
+        </div>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
