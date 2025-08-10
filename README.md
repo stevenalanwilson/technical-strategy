@@ -1,4 +1,10 @@
-To enable representing your one-page strategy document in code, you need a **semantic language** (a formal, structured grammar specifying valid expressions and their meaning) and an **ontology** (a defined vocabulary of concepts and their relationships). Below is a proposal for both, designed specifically for your strategy doc structure, suitable for YAML/JSON or custom DSL.
+# Digital Platform Strategy Document: Semantic Language & Ontology
+
+This repository provides a structured approach for representing your digital platform strategy as code. By defining a formal ontology and semantic language, you can capture strategic goals, values, targets, and initiatives in machine-readable formats like YAML, JSON, or a custom DSL. This enables validation, automation, and seamless integration with software tools, making your strategy actionable and easy to maintain.
+
+To enable representing your one-page strategy  in code, we will use a **semantic language** (a formal, structured grammar specifying valid expressions and their meaning) and an **ontology** (a defined vocabulary of concepts and their relationships). 
+
+Below is a proposal for both, designed specifically strategy, suitable for YAML/JSON or custom DSL.
 
 ***
 
@@ -103,7 +109,7 @@ strategy_document:
 
 If you prefer an even more natural-language DSL:
 
-```
+```yaml
 StrategyDocument
   Purpose: "Empower users and partners..."
   Vision: "To be the leading digital platform..."
