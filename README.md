@@ -68,6 +68,12 @@ Here is a rewritten ontology design specification for your strategy document, al
 
 ***
 
+## Model Diagram 
+
+[Link to model diagrm](https://stevenalanwilson.github.io/technical-strategy/)
+
+***
+
 ## **Semantic Language (Example via YAML Syntax)**
 
 ```yaml
