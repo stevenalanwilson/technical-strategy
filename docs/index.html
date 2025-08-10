@@ -3,273 +3,214 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Strategy Ontology Diagram - HTML/CSS</title>
+<title>Strategy Ontology Framework - Table Diagram</title>
 <style>
-  /* Reset basics */
   body {
     font-family: Arial, sans-serif;
-    margin: 20px;
-    background: #f9f9f9;
+    margin: 30px;
+    background: #fafafa;
     color: #222;
   }
-
   h1 {
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
-
-  /* Container uses grid with 5 vertical columns for time horizons */
-  .diagram {
-    display: grid;
-    grid-template-columns: 180px 180px 180px 180px 220px;
-    gap: 20px 40px;
-    max-width: 1000px;
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 1100px;
     margin: 0 auto;
-    position: relative;
+    table-layout: fixed;
   }
-
-  /* Vertical bands background */
-  .band {
-    position: absolute;
-    top: 0; bottom: 0;
-    opacity: 0.15;
-    z-index: 1;
-  }
-  .band.enduring   { background-color: #fff2b0; left: 0; width: 180px; }
-  .band.midterm    { background-color: #cbe4ff; left: 220px; width: 180px; }
-  .band.oneyear    { background-color: #d8f2c3; left: 440px; width: 180px; }
-  .band.quarter    { background-color: #ffd8b2; left: 660px; width: 180px; }
-  .band.next       { background-color: #ffeac3; left: 880px; width: 220px; }
-
-  /* Band headers */
-  .band-labels {
-    display: grid;
-    grid-template-columns: 180px 180px 180px 180px 220px;
-    margin: 0 auto 12px;
-    max-width: 1000px;
+  th, td {
+    padding: 16px 10px;
     text-align: center;
-    font-weight: bold;
-    color: #555;
-    font-size: 14px;
+    vertical-align: middle;
+    border: 2px solid #ccc;
+    position: relative;
+    word-wrap: break-word;
+    font-weight: 600;
+    font-size: 15px;
   }
+  th {
+    background: #888;
+    color: white;
+  }
+  /* Time horizons column headers */
+  .col-enduring { background: #fff2b0; }
+  .col-midterm { background: #cbe4ff; }
+  .col-oneyear { background: #d8f2c3; }
+  .col-quarter { background: #ffd8b2; }
+  .col-next { background: #ffeac3; }
 
-  /* Each box container */
-  .box {
+  /* Entity cell styles */
+  .entity {
     background: white;
     border-radius: 10px;
-    padding: 15px 14px;
     box-shadow: 0 3px 6px rgb(0 0 0 / 0.1);
-    border: 2px solid #666;
-    position: relative;
-    z-index: 2;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-weight: 600;
-    font-size: 14px;
   }
 
-  /* Arrow connector lines between columns using ::after */
-  .box.connect-right::after {
-    content: "";
+  /* Arrows for hierarchical relations */
+  /* Right pointing arrow on the right edge */
+  .arrow-right::after {
+    content: "→";
+    font-size: 22px;
     position: absolute;
+    right: -24px;
     top: 50%;
-    right: -30px;
-    width: 30px;
-    height: 2px;
-    background: #888;
-    box-shadow: 2px 0 0 0 #888;
+    transform: translateY(-50%);
+    color: #555;
   }
-  /* Arrowhead (triangle) to the right */
-  .box.connect-right::before {
-    content: "";
+
+  /* Down arrow below cell */
+  .arrow-down::after {
+    content: "↓";
+    font-size: 22px;
     position: absolute;
-    top: calc(50% - 5px);
-    right: -10px;
-    border: 5px solid transparent;
-    border-left-color: #888;
+    bottom: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #555;
   }
 
-  /* Special vertical line for some connections (e.g. within the same column) */
-  .down-arrow {
-    position: relative;
-  }
-  .down-arrow::after {
-    content: "";
+  /* Combine right and down arrow for cells that connect both ways */
+  .arrow-right-down::after {
+    content: "↘";
+    font-size: 22px;
     position: absolute;
-    left: 50%;
-    bottom: -20px;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 20px;
-    background: #888;
-  }
-  .down-arrow.connect-right::after {
-    width: 28px;
-    height: 2px;
-    bottom: auto;
-    top: 50%;
-    left: 100%;
-    transform: translate(0, -50%);
+    right: -24px;
+    bottom: -26px;
+    color: #555;
   }
 
-  /* Specific grid row placement for vertical spacing and order */
-  .box.purpose          { grid-column: 1; grid-row: 1; }
-  .box.vision           { grid-column: 1; grid-row: 2; }
-  .box.core-values      { grid-column: 1; grid-row: 3; }
-  .box.targets          { grid-column: 2; grid-row: 2 / 4; } /* spans 2 rows */
-  .box.annual-goals     { grid-column: 3; grid-row: 1; }
-  .box.kpis             { grid-column: 3; grid-row: 2; }
-  .box.key-initiatives  { grid-column: 4; grid-row: 1 / 3; } /* spans 2 rows */
-  .box.meeting-rhythms  { grid-column: 5; grid-row: 1; }
-
-  /* Connectors between boxes */
-  /* Purpose → Vision */
-  .box.purpose.connect-down::after,
-  .box.purpose.connect-down::before {
-    left: 50%;
-    right: auto;
-    top: 100%;
-    bottom: auto;
-    transform: translateX(-50%);
+  /* Adjust cell padding when arrows present to avoid crowding */
+  .arrow-right, .arrow-right-down {
+    padding-right: 30px;
   }
-  .box.purpose.connect-down::after {
-    width: 2px;
-    height: 20px;
-    background: #888;
-    border-radius: 1px;
-  }
-  .box.purpose.connect-down::before {
-    border: 5px solid transparent;
-    border-top-color: #888;
-    top: calc(100% + 15px);
-    left: 50%;
-    transform: translateX(-50%);
-    position: absolute;
+  .arrow-down, .arrow-right-down {
+    padding-bottom: 35px;
   }
 
-  /* Vision → Core Values */
-  .box.vision.connect-down::after,
-  .box.vision.connect-down::before {
-    left: 50%;
-    top: 100%;
-    transform: translateX(-50%);
-  }
-  .box.vision.connect-down::after {
-    width: 2px;
-    height: 20px;
-    background: #888;
-  }
-  .box.vision.connect-down::before {
-    border: 5px solid transparent;
-    border-top-color: #888;
-    top: calc(100% + 15px);
-    left: 50%;
-    position: absolute;
-    transform: translateX(-50%);
-  }
-
-  /* Core Values → Targets (horizontal right) */
-  .box.core-values.connect-right {
-    margin-bottom: 40px;
-  }
-  /* Targets → Annual Goals (horizontal right) */
-  .box.targets.connect-right {
-    margin-bottom: 20px;
-  }
-  /* Annual Goals → KPIs (down arrow, same col) */
-  .box.annual-goals.connect-down {
-    margin-bottom: 10px;
-  }
-  /* KPIs → Key Initiatives (horizontal right) */
-  .box.kpis.connect-right {
-    margin-top: 10px;
-  }
-  /* Key Initiatives → Meeting Rhythms (horizontal right) */
-  .box.key-initiatives.connect-right {
-    margin-bottom: 10px;
-  }
-
-  /* Responsive for smaller screens */
-  @media (max-width: 900px) {
-    .diagram {
-      grid-template-columns: 1fr;
-      gap: 20px 0;
+  /* Responsive: stack table for narrow screens */
+  @media (max-width: 700px) {
+    table, thead, tbody, th, td, tr {
+      display: block;
     }
-    .box {
-      grid-column: 1 !important;
-      grid-row: auto !important;
+    thead tr {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+    tr {
+      margin: 0 0 1.5rem 0;
+    }
+    td {
+      border: none;
+      padding-left: 50%;
+      text-align: left;
+      position: relative;
       min-height: 50px;
-      font-size: 12px;
     }
-    .band, .band-labels {
-      display: none;
+    td::before {
+      position: absolute;
+      left: 10px;
+      top: 14px;
+      width: 45%;
+      white-space: nowrap;
+      font-weight: bold;
     }
-    .box.connect-right::after,
-    .box.connect-right::before,
-    .box.connect-down::after,
-    .box.connect-down::before {
-      display: none;
-    }
+    /* Label each cell with its column header on small screens */
+    td:nth-of-type(1)::before { content: "Enduring"; }
+    td:nth-of-type(2)::before { content: "3 to 5 years"; }
+    td:nth-of-type(3)::before { content: "1 year"; }
+    td:nth-of-type(4)::before { content: "Quarter"; }
+    td:nth-of-type(5)::before { content: "Next"; }
   }
 </style>
 </head>
 <body>
-<h1>Strategy Ontology Framework Diagram</h1>
 
-<!-- Band backgrounds -->
-<div class="band enduring"></div>
-<div class="band midterm"></div>
-<div class="band oneyear"></div>
-<div class="band quarter"></div>
-<div class="band next"></div>
+<h1>Strategy Ontology Framework</h1>
 
-<!-- Band labels -->
-<div class="band-labels">
-  <div>Enduring</div>
-  <div>3 to 5 years</div>
-  <div>1 year</div>
-  <div>Quarter</div>
-  <div>Next</div>
-</div>
+<table aria-label="Strategy Ontology Framework Diagram">
+  <thead>
+    <tr>
+      <th class="col-enduring">Enduring</th>
+      <th class="col-midterm">3 to 5 years</th>
+      <th class="col-oneyear">1 year</th>
+      <th class="col-quarter">Quarter</th>
+      <th class="col-next">Next</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="entity arrow-down" rowspan="3" style="vertical-align: top;">
+        Purpose
+        <div style="font-weight: normal; margin-top:8px; font-size:13px;">
+          Core purpose statement
+        </div>
+      </td>
+      <td></td>
+      <td class="entity arrow-down" style="vertical-align: top;">
+        Annual Goals
+        <div style="font-weight: normal; margin-top:8px; font-size:13px;">
+          Yearly goals with OKRs
+        </div>
+      </td>
+      <td class="entity arrow-right" style="vertical-align: top;">
+        Key Initiatives
+        <div style="font-weight: normal; margin-top:8px; font-size:13px;">
+          Areas, initiatives, time frame, OKRs
+        </div>
+      </td>
+      <td class="entity" style="vertical-align: top;">
+        Meeting Rhythms
+        <div style="font-weight: normal; margin-top:8px; font-size:13px;">
+          Scheduled recurring meetings
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="entity arrow-right" style="vertical-align: top;">
+        Targets
+        <div style="font-weight: normal; margin-top:8px; font-size:13px;">
+          Strategic targets & time frames
+        </div>
+      </td>
+      <td class="entity arrow-down" style="vertical-align: top;">
+        KPIs
+        <div style="font-weight: normal; margin-top:8px; font-size:13px;">
+          Key performance indicators
+        </div>
+      </td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="entity arrow-down" style="vertical-align: top;">
+        Vision
+        <div style="font-weight: normal; margin-top:8px; font-size:13px;">
+          Long-term aspirational vision
+        </div>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td class="entity arrow-right" style="vertical-align: middle;">
+        Core Values
+        <div style="font-weight: normal; margin-top:8px; font-size:13px;">
+          Guiding principles (multiple)
+        </div>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
 
-<!-- Grid container -->
-<div class="diagram" role="img" aria-label="Strategy ontology framework diagram">
-
-  <div class="box purpose connect-down" tabindex="0" title="Purpose: Core purpose of the strategy">
-    Purpose
-  </div>
-
-  <div class="box vision connect-down" tabindex="0" title="Vision: Long-term aspirational vision">
-    Vision
-  </div>
-
-  <div class="box core-values connect-right connect-down" tabindex="0" title="Core Values: Guiding principles">
-    Core Values
-  </div>
-
-  <div class="box targets connect-right" tabindex="0" title="Targets: Strategic targets with description and time frame">
-    Targets
-  </div>
-
-  <div class="box annual-goals connect-down" tabindex="0" title="Annual Goals: Yearly goals with description, time frame, and OKRs">
-    Annual Goals
-  </div>
-
-  <div class="box kpis connect-right" tabindex="0" title="KPIs: Key performance indicators measuring success">
-    KPIs
-  </div>
-
-  <div class="box key-initiatives connect-right" tabindex="0" title="Key Initiatives: Areas, initiatives, time frame, and OKRs">
-    Key Initiatives
-  </div>
-
-  <div class="box meeting-rhythms" tabindex="0" title="Meeting Rhythms: Scheduled recurring meetings">
-    Meeting Rhythms
-  </div>
-
-</div>
 </body>
 </html>
